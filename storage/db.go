@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ianmiao/sudb/clog"
+	"github.com/ianmiao/sudb/internal/clog"
 )
 
 type (
