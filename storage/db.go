@@ -20,7 +20,7 @@ type (
 
 		currMemTable *MemTable
 
-		immutableMemTables *ImmutableMemTableList // MemTables need to be transfered into SSTables
+		immutableMemTables *ImmutableMemTableList // MemTables need to be transferred into SSTables
 		levelSSTables      *LevelSSTableList
 
 		// minor compaction goroutine
@@ -129,7 +129,6 @@ func (db *DB) Close() {
 
 func (db *DB) Search(key string) ([]byte, error) {
 
-	// TODO: add bloom filter
 	for _, f := range []func(string) ([]byte, bool, error){
 		func(key string) ([]byte, bool, error) {
 			value, has := db.currMemTable.search(key)
@@ -140,6 +139,7 @@ func (db *DB) Search(key string) ([]byte, error) {
 			return value, has, nil
 		},
 		func(key string) ([]byte, bool, error) {
+			// TODO: add bloom filter
 			return db.levelSSTables.search(key)
 		},
 	} {
@@ -268,7 +268,7 @@ func (db *DB) restoreMemTables() error {
 		return err
 	}
 
-	// MemTable may already transfered into level0 SSTable
+	// MemTable may already transferred into level0 SSTable
 	// level0 SSTable file name is same to MemTable WAL file
 	level0SSTableDataPath := getLevelSSTableDataDir(db.dbDir, 0)
 	ssTableDataFileInfos, err := ioutil.ReadDir(level0SSTableDataPath)
